@@ -38,7 +38,7 @@ function AutokeyCipher_Encrypt([string]$text, [string]$key) {
             of those two inputs on a tabula recta. The key is appended with the input allowing for
             a shorter key than the message. 
         .EXAMPLE
-            AutokeyCipher_Encrypt "Hello There" "Turing"
+            AutokeyCipher_Encrypt -Text "Hello There" -Key "Turing"
             > ayctbzoicp
         .INPUTS
             [string] Text : the text to be encrypted using the autokey cipher
@@ -69,7 +69,7 @@ function AutokeyCipher_Decrypt([string]$Text, [string]$Key) {
             of those two inputs on a tabula recta. The key is appended with the decrypted 
             result allowing for a shorter key than message. 
         .EXAMPLE
-            AutokeyCipher_Decrypt "ayctbzoicp" "Turing"
+            AutokeyCipher_Decrypt -Text "ayctbzoicp" -Key "Turing"
             > hellothere
         .INPUTS
             [string] Text : the text to be decrypted using the autokey cipher
