@@ -6,81 +6,63 @@ function PlayfairCipher_Encrypt($Text, $Key) {
     $Key = $key.Replace(" ", "");
     $result = "";
     $table = Make-PlayfaireTable($Key);
-    # split into pairs
-    $paired_array = @();
     for ($i = 0; $i -lt $Text.Length; $i++){
-        $temp = "";
-        $temp += $Text[$i];
+        #split into pairs
+        $pair = "";
+        $pair += $Text[$i];
         if($Text[$i] -eq $Text[$i+1]){
-            $temp += 'x';
+            $pair += 'x';
         }
         else{
-            $i++;
-            $temp += $Text[$i];
+            $i++
+            $pair += $Text[$i];
         }
-        if ($temp.Length -eq 1 -and $i -eq $Text.Length){
-            $temp += 'x';
+        if ($pair.Length -eq 1 -and $i -eq $Text.Length){
+            $pair += 'x';
         }
-        $paired_array += $temp;
-        $temp = "";
-    }
-    # encrypt using the rules
-    $paired_index_array = [System.Object[]]::new($paired_array.Length);
-    for ($a = 0; $a -lt $paired_array.Length; $a++){
-        $a_index = $null;
-        $b_index = $null;
-        for ($i = 0; $i -lt 5; $i++){
-            for ($j = 0; $j -lt 5; $j++){
-                if($table[$i, $j] -eq $paired_array[$a][0]){
-                    $a_index = [System.Tuple]::Create($i, $j);
+        Write-Host($pair);
+        # get indices of each
+        for($j = 0; $j -lt 5; $j++){
+            for($k = 0; $k -lt 5; $k++){
+                if ($table[$j,$k] -eq $pair[0]){
+                    $a_index = [System.Tuple]::Create($j, $k);
                 }
-                elseif ($table[$i, $j] -eq $paired_array[$a][1]) {
-                    $b_index = [System.Tuple]::Create($i, $j);
+                elseif ($table[$j, $k] -eq $pair[1]){
+                    $b_index = [System.Tuple]::Create($j, $k);
                 }
             }
         }
-        $paired_index_array[$a] = [System.Tuple]::Create($a_index, $b_index);
-    }
-
-    for($i = 0; $i -lt $paired_index_array.Length; $i++){
-        $LetterIndex1 = $paired_index_array[$i].Item1;
-        $LetterIndex2 = $paired_index_array[$i].Item2;
-        # Row Rule
-        if($LetterIndex1.Item1 -eq $LetterIndex2.Item1){
-            if($LetterIndex1.Item2 -eq 4){ 
-                $result += $table[$LetterIndex1.Item1, 0];
-                $result += $table[$LetterIndex2.Item1, ($LetterIndex2.Item2+1)];
-                continue;
+        # Row rule
+        if ($a_index.Item1 -eq $b_index.Item1){
+            if($a_index.Item2 -eq 4){
+                $result += $table[$a_index.Item1, 0];
+                $result += $table[$b_index.Item1, ($b_index.Item2+1)];
             }
-            if ($LetterIndex2.Item2 -eq 4) {
-                $result += $table[($LetterIndex1.Item1), ($LetterIndex1.Item2+1)];
-                $result += $table[$LetterIndex2.Item1, 0]; 
-                continue;
+            elseif ($b_index.Item2 -eq 4) {
+                $result += $table[$a_index.Item1, ($a_index.Item2+1)];
+                $result += $table[$b_index.Item1, 0];
             }
-            
-                $result += $table[$LetterIndex1.Item1, ($LetterIndex1.Item2+1)];
-                $result += $table[$LetterIndex2.Item1, ($LetterIndex2.Item2+1)];
-            continue;
+            else {
+                $result += $table[$a_index.Item1, ($a_index.Item2+1)];
+                $result += $table[$b_index.Item1, ($b_index.Item2+1)];
+            }
         }
         # Column Rule
-        if ($LetterIndex1.Item2 -eq $LetterIndex2.Item2) {
-            if($LetterIndex1.Item1  -eq 4){
-                $result += $table[0, $LetterIndex1.Item2];
-                $result += $table[($LetterIndex2.Item1+1), $LetterIndex2.Item2];
-                continue;
+        elseif ($a_index.Item2 -eq $b_index.Item2) {
+            if($a_index.Item1 -eq 4){
+                $result += $table[0, $a_index.Item2];
+                $result += $table[($b_index.Item1+1), $b_index.Item2]
             }
-            if ($LetterIndex2.Item1 -eq 4) {
-                $result += $table[($LetterIndex1.Item1+1), $LetterIndex1.Item2];
-                $result += $table[0, $LetterIndex2.Item2]; 
-                continue;
+            elseif($b_index.Item1 -eq 4){
+                $result += $table[($a_index.Item1+1), $a_index.Item2]
+                $result += $table[0, $b_index.Item2];
             }
-                $result += $table[($LetterIndex1.Item1+1), ($LetterIndex1.Item2)];
-                $result += $table[($LetterIndex2.Item1+1), ($LetterIndex2.Item2)];
-            continue;
         }
-        # Rectangle rule
-            $result += $table[$LetterIndex1.Item1, $LetterIndex2.Item2];
-            $result += $table[$LetterIndex2.Item1, $LetterIndex1.Item2];
+        # Rectangle Rule
+        else{
+            $result += $table[$a_index.Item1, $b_index.Item2];
+            $result += $table[$b_index.Item1, $a_index.Item2];
+        }
     }
     return $result;
 }
@@ -93,78 +75,63 @@ function PlayfairCipher_Decrypt([string]$Text, [string]$Key) {
     $result = "";
     # fill the table
     $table = Make-PlayfaireTable($Key)
-    $paired_array = @();
     for ($i = 0; $i -lt $Text.Length; $i++){
-        $temp = "";
-        $temp += $Text[$i];
+        #split into pairs
+        $pair = "";
+        $pair += $Text[$i];
         if($Text[$i] -eq $Text[$i+1]){
-            $temp += 'x';
+            $pair += 'x';
         }
         else{
-            $i++;
-            $temp += $Text[$i];
+            $i++
+            $pair += $Text[$i];
         }
-        if ($temp.Length -eq 1 -and $i -eq $Text.Length){
-            $temp += 'x';
+        if ($pair.Length -eq 1 -and $i -eq $Text.Length){
+            $pair += 'x';
         }
-        $paired_array += $temp;
-        $temp = "";
-    }
-    $paired_index_array = [System.Object[]]::new($paired_array.Length);
-    for ($a = 0; $a -lt $paired_array.Length; $a++){
-        $a_index = $null;
-        $b_index = $null;
-        for ($i = 0; $i -lt 5; $i++){
-            for ($j = 0; $j -lt 5; $j++){
-                if($table[$i, $j] -eq $paired_array[$a][0]){
-                    $a_index = [System.Tuple]::Create($i, $j);
+        Write-Host($pair);
+        # get indices of each
+        for($j = 0; $j -lt 5; $j++){
+            for($k = 0; $k -lt 5; $k++){
+                if ($table[$j,$k] -eq $pair[0]){
+                    $a_index = [System.Tuple]::Create($j, $k);
                 }
-                elseif ($table[$i, $j] -eq $paired_array[$a][1]) {
-                    $b_index = [System.Tuple]::Create($i, $j);
+                elseif ($table[$j, $k] -eq $pair[1]){
+                    $b_index = [System.Tuple]::Create($j, $k);
                 }
             }
         }
-        $paired_index_array[$a] = [System.Tuple]::Create($a_index, $b_index);
-    }
-    for($i = 0; $i -lt $paired_index_array.Length; $i++){
-        $LetterIndex1 = $paired_index_array[$i].Item1;
-        $LetterIndex2 = $paired_index_array[$i].Item2;
-        # Row Rule
-        if($LetterIndex1.Item1 -eq $LetterIndex2.Item1){
-            if($LetterIndex1.Item2 -eq 0){
-                $result += $table[$LetterIndex1.Item1, 4];
-                $result += $table[$LetterIndex2.Item1, ($LetterIndex2.Item2-1)];
-                continue;
+        # Row rule
+        if ($a_index.Item1 -eq $b_index.Item1){
+            if($a_index.Item2 -eq 0){
+                $result += $table[$a_index.Item1, 4];
+                $result += $table[$b_index.Item1, ($b_index.Item2-1)];
             }
-            if ($LetterIndex2.Item2 -eq 0) {
-                $result += $table[($LetterIndex1.Item1), ($LetterIndex1.Item2-1)];
-                $result += $table[$LetterIndex2.Item1, 4]; 
-                continue;
+            elseif ($b_index.Item2 -eq 0) {
+                $result += $table[$a_index.Item1, ($a_index.Item2-1)];
+                $result += $table[$b_index.Item1, 4];
             }
-            
-                $result += $table[$LetterIndex1.Item1, ($LetterIndex1.Item2-1)];
-                $result += $table[$LetterIndex2.Item1, ($LetterIndex2.Item2-1)];
-            continue;
+            else {
+                $result += $table[$a_index.Item1, ($a_index.Item2-1)];
+                $result += $table[$b_index.Item1, ($b_index.Item2-1)];
+            }
         }
         # Column Rule
-        if ($LetterIndex1.Item2 -eq $LetterIndex2.Item2) {         
-            if($LetterIndex1.Item1  -eq 0){
-                $result += $table[4, $LetterIndex1.Item2];
-                $result += $table[($LetterIndex2.Item1-1), $LetterIndex2.Item2];
-                continue;
+        elseif ($a_index.Item2 -eq $b_index.Item2) {
+            if($a_index.Item1 -eq 0){
+                $result += $table[4, $a_index.Item2];
+                $result += $table[($b_index.Item1-1), $b_index.Item2]
             }
-            if ($LetterIndex2.Item1 -eq 0) {
-                $result += $table[($LetterIndex1.Item1-1), $LetterIndex1.Item2];
-                $result += $table[4, $LetterIndex2.Item2]; 
-                continue;
+            elseif($b_index.Item1 -eq 0){
+                $result += $table[($a_index.Item1-1), $a_index.Item2]
+                $result += $table[4, $b_index.Item2];
             }
-                $result += $table[($LetterIndex1.Item1-1), ($LetterIndex1.Item2)];
-                $result += $table[($LetterIndex2.Item1-1), ($LetterIndex2.Item2)];
-            continue;
         }
-        # Rectangle rule
-            $result += $table[$LetterIndex1.Item1, $LetterIndex2.Item2];
-            $result += $table[$LetterIndex2.Item1, $LetterIndex1.Item2];
+        # Rectangle Rule
+        else{
+            $result += $table[$a_index.Item1, $b_index.Item2];
+            $result += $table[$b_index.Item1, $a_index.Item2];
+        }
     }
     return $result;
 
