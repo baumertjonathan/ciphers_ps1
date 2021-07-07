@@ -6,7 +6,6 @@ function PlayfairCipher_Encrypt($Text, $Key) {
     $Key = $key.Replace(" ", "");
     $result = "";
     $table = Make-PlayfaireTable($Key);
-    Draw-Table($table);
     # split into pairs
     $paired_array = @();
     for ($i = 0; $i -lt $Text.Length; $i++){
@@ -80,7 +79,6 @@ function PlayfairCipher_Encrypt($Text, $Key) {
             continue;
         }
         # Rectangle rule
-            Write-Host("Rectangle pair found: ", $table[$LetterIndex1.Item1, $LetterIndex1.Item2], $table[$LetterIndex2.Item1, $LetterIndex2.Item2])
             $result += $table[$LetterIndex1.Item1, $LetterIndex2.Item2];
             $result += $table[$LetterIndex2.Item1, $LetterIndex1.Item2];
     }
