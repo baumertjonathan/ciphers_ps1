@@ -5,7 +5,7 @@ function PlayfairCipher_Encrypt($Text, $Key) {
     $Key = $Key.ToLower();
     $Key = $key.Replace(" ", "");
     $result = "";
-    $table = Make-PlayfaireTable($Key);
+    $table = New-PlayfairTable($Key);
     for ($i = 0; $i -lt $Text.Length; $i++){
         #split into pairs
         $pair = "";
@@ -20,7 +20,6 @@ function PlayfairCipher_Encrypt($Text, $Key) {
         if ($pair.Length -eq 1 -and $i -eq $Text.Length){
             $pair += 'x';
         }
-        Write-Host($pair);
         # get indices of each
         for($j = 0; $j -lt 5; $j++){
             for($k = 0; $k -lt 5; $k++){
@@ -34,29 +33,38 @@ function PlayfairCipher_Encrypt($Text, $Key) {
         }
         # Row rule
         if ($a_index.Item1 -eq $b_index.Item1){
+            # this would be nicer as a ternery expression but ps 5 doesent support that. 
             if($a_index.Item2 -eq 4){
-                $result += $table[$a_index.Item1, 0];
-                $result += $table[$b_index.Item1, ($b_index.Item2+1)];
+                $a2 = 0;
             }
-            elseif ($b_index.Item2 -eq 4) {
-                $result += $table[$a_index.Item1, ($a_index.Item2+1)];
-                $result += $table[$b_index.Item1, 0];
+            else{
+                $a2 = $a_index.Item2+1;
             }
-            else {
-                $result += $table[$a_index.Item1, ($a_index.Item2+1)];
-                $result += $table[$b_index.Item1, ($b_index.Item2+1)];
+            if($b_index.Item2 -eq 4){
+                $b2 = 0;
             }
+            else{
+                $b2 = $b_index.Item2+1;
+            }
+            $result += $table[$a_index.Item1, $a2];
+            $result += $table[$b_index.Item1, $b2];
         }
         # Column Rule
         elseif ($a_index.Item2 -eq $b_index.Item2) {
             if($a_index.Item1 -eq 4){
-                $result += $table[0, $a_index.Item2];
-                $result += $table[($b_index.Item1+1), $b_index.Item2]
+                $a1 = 0;
             }
-            elseif($b_index.Item1 -eq 4){
-                $result += $table[($a_index.Item1+1), $a_index.Item2]
-                $result += $table[0, $b_index.Item2];
+            else{
+                $a1 = $a_index.Item1+1;
             }
+            if($b_index.Item1 -eq 4){
+                $b1 = 0;
+            }
+            else{
+                $b1 = $b_index.Item1+1;
+            }
+            $result += $table[$a1, $a_index.Item2];
+            $result += $table[$b1, $b_index.Item2];
         }
         # Rectangle Rule
         else{
@@ -74,7 +82,7 @@ function PlayfairCipher_Decrypt([string]$Text, [string]$Key) {
     $Key = $key.Replace(" ", "");
     $result = "";
     # fill the table
-    $table = Make-PlayfaireTable($Key)
+    $table = New-PlayfairTable($Key)
     for ($i = 0; $i -lt $Text.Length; $i++){
         #split into pairs
         $pair = "";
@@ -89,7 +97,6 @@ function PlayfairCipher_Decrypt([string]$Text, [string]$Key) {
         if ($pair.Length -eq 1 -and $i -eq $Text.Length){
             $pair += 'x';
         }
-        Write-Host($pair);
         # get indices of each
         for($j = 0; $j -lt 5; $j++){
             for($k = 0; $k -lt 5; $k++){
@@ -103,29 +110,38 @@ function PlayfairCipher_Decrypt([string]$Text, [string]$Key) {
         }
         # Row rule
         if ($a_index.Item1 -eq $b_index.Item1){
+            # this would be nicer as a ternery expression but powershell 5 doesent support that. 
             if($a_index.Item2 -eq 0){
-                $result += $table[$a_index.Item1, 4];
-                $result += $table[$b_index.Item1, ($b_index.Item2-1)];
+                $a2 = 4;
             }
-            elseif ($b_index.Item2 -eq 0) {
-                $result += $table[$a_index.Item1, ($a_index.Item2-1)];
-                $result += $table[$b_index.Item1, 4];
+            else{
+                $a2 = $a_index.Item2-1;
             }
-            else {
-                $result += $table[$a_index.Item1, ($a_index.Item2-1)];
-                $result += $table[$b_index.Item1, ($b_index.Item2-1)];
+            if($b_index.Item2 -eq 0){
+                $b2 = 4;
             }
+            else{
+                $b2 = $b_index.Item2-1;
+            }
+            $result += $table[$a_index.Item1, $a2];
+            $result += $table[$b_index.Item1, $b2];
         }
         # Column Rule
         elseif ($a_index.Item2 -eq $b_index.Item2) {
             if($a_index.Item1 -eq 0){
-                $result += $table[4, $a_index.Item2];
-                $result += $table[($b_index.Item1-1), $b_index.Item2]
+                $a1 = 4;
             }
-            elseif($b_index.Item1 -eq 0){
-                $result += $table[($a_index.Item1-1), $a_index.Item2]
-                $result += $table[4, $b_index.Item2];
+            else{
+                $a1 = $a_index.Item1-1;
             }
+            if($b_index.Item1 -eq 0){
+                $b1 = 4;
+            }
+            else{
+                $b1 = $b_index.Item1-1;
+            }
+            $result += $table[$a1, $a_index.Item2];
+            $result += $table[$b1, $b_index.Item2];
         }
         # Rectangle Rule
         else{
@@ -137,7 +153,7 @@ function PlayfairCipher_Decrypt([string]$Text, [string]$Key) {
 
 }
 
-function Make-PlayfaireTable([string]$key) {
+function New-PlayfairTable([string]$key) {
     $table = New-Object 'string[,]' 5,5; 
     $key_it = 0;
     $alpha_it = 0;
@@ -164,12 +180,10 @@ function Make-PlayfaireTable([string]$key) {
             }
         }
     }
-    Write-Host("Created table");
-    Draw-Table($table);
     return ,$table #interesting stuff https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7.1#comma-operator-
 }
 
-function Draw-Table($table) {
+function Write-PlayfairTable($table) {
     $row = "";
     for($i = 0; $i -lt 5; $i++){
         for($j= 0; $j -lt 5; $j++){
