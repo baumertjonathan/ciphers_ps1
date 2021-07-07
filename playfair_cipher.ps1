@@ -1,9 +1,24 @@
-$alphabet = "abcdefghiklmnopqrstuvwxyz";
+$playfaire_alphabet = "abcdefghiklmnopqrstuvwxyz";
 function PlayfairCipher_Encrypt($Text, $Key) {
+    <#
+        .SYNOPSIS
+            Encrypts a string of text using a Playfair cipher
+        .DESCRIPTION
+            Encrypts a string by mapping a key into a 5x5 table, pairing the letters then following a series of rules:
+            1: If both letters are the same add an `x` after the first letter and then continue. 
+            2: If the letters are in the same row of the table replace them with the letters to the right of them (wrapping as needed)
+            3: If the letters are in the same column of the table replace them with the letters dicectly belwo them (wrapping as needed)
+            4: If the letters are in nether the same row or column replace them with the letters on the same row but column of the other (opposite corners of the rectangle)
+
+        .EXAMPLE
+            PlayfairCipher_Encrypt -Text "Hello There"  -Key "Alan Turing"
+            > kfnwiwbqdifw
+        .INPUTS
+            [string]Text : The string of text to be encrypted using the cipher.
+            [string]Key  : The key to be used in encrypting the text. 
+    #>
     $Text = $Text.ToLower();
     $Text = $Text.Replace(" ", "");
-    $Key = $Key.ToLower();
-    $Key = $key.Replace(" ", "");
     $result = "";
     $table = New-PlayfairTable($Key);
     for ($i = 0; $i -lt $Text.Length; $i++){
@@ -75,11 +90,29 @@ function PlayfairCipher_Encrypt($Text, $Key) {
     return $result;
 }
 
-function PlayfairCipher_Decrypt([string]$Text, [string]$Key) {
+function PlayfairCipher_Decrypt([string]$Text, [string]$Key, [bool]$CleanOutput = $false) {
+        <#
+        .SYNOPSIS
+            Decrypts a string of text using a Playfair cipher
+        .DESCRIPTION
+            Decrypts a string by mapping a key into a 5x5 table, pairing the letters then following the inverse of a series of rules:
+            1: If the letters are in the same row of the table replace them with the letters to the right of them (wrapping as needed)
+            2: If the letters are in the same column of the table replace them with the letters dicectly belwo them (wrapping as needed)
+            3: If the letters are in nether the same row or column replace them with the letters on the same row but column of the other (opposite corners of the rectangle)
+            There is an optional third parameter to remove x's likely introduced in encoding, this can break some words though (eg: annex, hexes)
+        .EXAMPLE
+            PlayfairCipher_Decrypt -Text "kfnwiwbqdifw"  -Key "Alan Turing"
+            > hellotherex
+        .EXAMPLE
+            PlayfairCipher_Decrypt -Text "kfnwiwbqdifw" -Key "Alan Turing" -CleanOutput $true
+            > hellothere
+        .INPUTS
+            [string]Text       : The string of text to be decrypting using the cipher.
+            [string]Key        : The key to be used in decrypting the text. 
+            [bool] CleanOutput : DEFAULT = $True If true, cleans out x's from the output likely inserted during encryption
+    #>
     $Text = $Text.ToLower();
     $Text = $Text.Replace(" ", "");
-    $Key = $Key.ToLower();
-    $Key = $key.Replace(" ", "");
     $result = "";
     # fill the table
     $table = New-PlayfairTable($Key)
@@ -149,11 +182,20 @@ function PlayfairCipher_Decrypt([string]$Text, [string]$Key) {
             $result += $table[$b_index.Item1, $a_index.Item2];
         }
     }
+    if($CleanOutput -eq $true){
+        for($i = 0; $i -lt $result.Length; $i++){
+            if(($result[$i] -eq "x") -and (($result[$i-1] -eq $result[$i+1]) -or ($i -eq $result.Length-1))){
+                $result = $result.remove($i, 1);
+            }
+        }
+    }
     return $result;
 
 }
 
 function New-PlayfairTable([string]$key) {
+    $Key = $Key.ToLower();
+    $Key = $key.Replace(" ", "");
     $table = New-Object 'string[,]' 5,5; 
     $key_it = 0;
     $alpha_it = 0;
@@ -172,10 +214,10 @@ function New-PlayfairTable([string]$key) {
                 $key_it++;
             }
             else{
-                while($key.IndexOf($alphabet[$alpha_it]) -ne -1){
+                while($key.IndexOf($playfaire_alphabet[$alpha_it]) -ne -1){
                     $alpha_it++;
                 }
-                $table[$i, $j] = $alphabet[$alpha_it];
+                $table[$i, $j] = $playfaire_alphabet[$alpha_it];
                 $alpha_it++;
             }
         }
@@ -194,3 +236,4 @@ function Write-PlayfairTable($table) {
         $row = "";
     }
 }
+
