@@ -1,240 +1,208 @@
-$BaconianEncrypt26 = @{
-    'A' = "aaaaa";
-    'B' = "aaaab";
-    'C' = "aaaba";
-    'D' = "aaabb";
-    'E' = "aabaa";
-    'F' = "aabab";
-    'G' = "aabba";
-    'H' = "aabbb";
-    'I' = "abaaa";
-    'J' = "abaab";
-    'K' = "ababa";
-    'L' = "ababb";
-    'M' = "abbaa";
-    'N' = "abbab";
-    'O' = "abbba";
-    'P' = "abbbb";
-    'Q' = "baaaa";
-    'R' = "baaab";
-    'S' = "baaba";
-    'T' = "baabb";
-    'U' = "babaa";
-    'V' = "babab";
-    'W' = "babba";
-    'X' = "babbb";
-    'Y' = "bbaaa";
-    'Z' = "bbaab";
-}
-
-$BaconianEncrypt24 = @{
-    'A' = "aaaaa";
-    'B' = "aaaab";
-    'C' = "aaaba";
-    'D' = "aaabb";
-    'E' = "aabaa";
-    'F' = "aabab";
-    'G' = "aabba";
-    'H' = "aabbb";
-    'I' = "abaaa";
-    'J' = "abaaa";
-    'K' = "abaab";
-    'L' = "ababa";
-    'M' = "ababb";
-    'N' = "abbaa";
-    'O' = "abbab";
-    'P' = "abbba";
-    'Q' = "abbbb";
-    'R' = "baaaa";
-    'S' = "baaab";
-    'T' = "baaba";
-    'U' = "baabb";
-    'V' = "baabb";
-    'W' = "babaa";
-    'X' = "babab";
-    'Y' = "babba";
-    'Z' = "babbb";
-}
-
-$BaconianDecrypt26 = @{
-    "aaaaa" = 'A';
-    "aaaab" = 'B';
-    "aaaba" = 'C';
-    "aaabb" = 'D';
-    "aabaa" = 'E';
-    "aabab" = 'F';
-    "aabba" = 'G';
-    "aabbb" = 'H';
-    "abaaa" = 'I';
-    "abaab" = 'J';
-    "ababa" = 'K';
-    "ababb" = 'L';
-    "abbaa" = 'M';
-    "abbab" = 'N';
-    "abbba" = 'O';
-    "abbbb" = 'P';
-    "baaaa" = 'Q';
-    "baaab" = 'R';
-    "baaba" = 'S';
-    "baabb" = 'T';
-    "babaa" = 'U';
-    "babab" = 'V';
-    "babba" = 'W';
-    "babbb" = 'X';
-    "bbaaa" = 'Y';
-    "bbaab" = 'Z';
-}
-
-$BaconianDecrypt24 = @{
-    "aaaaa" = "A";
-    "aaaab" = "B";
-    "aaaba" = "C";
-    "aaabb" = "D";
-    "aabaa" = "E";
-    "aabab" = "F";
-    "aabba" = "G";
-    "aabbb" = "H";
-    "abaaa" = "(I/J)";
-    "abaab" = "K";
-    "ababa" = "L";
-    "ababb" = "M";
-    "abbaa" = "N";
-    "abbab" = "O";
-    "abbba" = "P";
-    "abbbb" = "Q";
-    "baaaa" = "R";
-    "baaab" = "S";
-    "baaba" = "T";
-    "baabb" = "(U/V)";
-    "babaa" = "W";
-    "babab" = "X";
-    "babba" = "Y";
-    "babbb" = "Z";
-}
-
-function BaconianCipher26_Encrypt([string]$Text) {
+function BaconianCipher {
+    
     <#
         .SYNOPSIS
-            Encrypts a string of text with a 26 character baconian cipher
+            Encrypts/Decrypts a string of text using a Baconian Cipher
         .DESCRIPTION
-            Encrypts a string of text where each character is transformed into a 
-            combination of "b" and "a" for example "D" could be represented as "aaabb"
-            This is an altered version of the baconian cipher to account for a 26 letter alphabet.
+            Encrypts a string of text by replacing each letter with a string of 5 A's and B's. 
+            Decrypts by replacing each set of 5 A's and B's with the corrosponding letter. 
+            This cipher traditionally uses a 24 letter alphabet with i/j sharing and u/v sharing. 
+            The cipher can be toggled to  decrypt by adding the -Decrypt parameter
+            The cipher can be toggled to use a 36 letter version of the cipher by adding the -Modern parameter 
         .EXAMPLE
-            BaconianCipher26_Encrypt "Hello There"
-            >> aabbbaabaaababbababbabbba baabbaabbbaabaabaaabaabaa
+            BaconianCipher -Text "Very Cool"
+            > baabbaabaabaaaababba aaabaabbababbabababa
+        .EXAMPLE
+            BaconianCipher -Text 'baabbaabaabaaaababba aaabaabbababbabababa' -Decrypt
+            > (U/V)ERY COOL
+        .EXAMPLE
+            BaconianCipher -Text "Very Cool" -Modern
+            > bababaabaabaaabbbaaa aaabaabbbaabbbaababb
+        .EXAMPLE
+            BaconianCipher -Text "bababaabaabaaabbbaaa aaabaabbbaabbbaababb" -Decrypt -Modern
+            > VERY COOL
         .INPUTS
-            [string] Text : The text to be encrypted using the baconian cipher. 
+            [switch] Decrypt : If present decrypts rather than encrypts the text
+            [switch] Modern  : If present encrypts/decrypts using a 26 letter version of the cipher
+            [string] Text    : The string of text to be encrypted/decrypted
     #>
-    $Text = $Text.ToUpper()
-    [string]$result = ""
-    for($i = 0; $i -lt $Text.Length; $i++){
-        if($Text[$i] -eq " "){
-            $result += " ";
-        }
-        else {
-            $result += $BaconianEncrypt26.[string]$Text[$i];
-        }
-    }
-    return $result;
-}
 
-function BaconianCipher24_Encrypt([string]$Text) {
-        <#
-        .SYNOPSIS
-            Encrypts a string of text with a 24 character baconian cipher
-        .DESCRIPTION
-            Encrypts a string of text where each character is transformed into a 
-            combination of "b" and "a" for example "D" could be represented as "aaabb"
-            This traditional version of the cipher has two sets of letters that share the same 
-            code I/J and U/V.
-        .EXAMPLE
-            BaconianCipher26_Encrypt "Hello There"
-            >> aabbbaabaaababbababbabbba baabbaabbbaabaabaaabaabaa
-        .INPUTS
-            [string] Text : The text to be encrypted using the baconian cipher. 
-    #>
-    $Text = $Text.ToUpper();
-    [string]$result = "";
-    for($i = 0; $i -lt $Text.Length; $i++){
-        if($Text[$i] -eq " "){
-            $result += " ";
-        }
-        else {
-            $result += $BaconianEncrypt24.[string]$Text[$i];
-        }
-    }
-    return $result;
-}
+    Param(
+        [switch]$Decrypt,
+        [switch]$Modern,
+        [string]$Text
+    )
 
-function BaconianCipher26_Decrypt([string]$Text) {
-        <#
-        .SYNOPSIS
-            Decrypts a string of text with a 26 character baconian cipher
-        .DESCRIPTION
-            Decrypts a string of text consisting of sets of 5 a's and b's using a baconian cipher. 
-            These sets of strings are not deliminated and decryption works properly wth spaces. 
-            This uses an altered version of the traditional baconian cipher to account for a 26 character
-            alphabet. 
-        .EXAMPLE
-            BaconianCipher26_Decrypt "aabbbaabaaababbababbabbba baabbaabbbaabaabaaabaabaa"
-            > "HELLO THERE"
-        .INPUTS
-            [string] Text : The text to be decrypted using the baconian cipher.
-    #>
+    #Normalize Text
     $Text = $Text.ToUpper();
-    [string]$result = "";
-    [string]$temp = "";
-    for($i = 0; $i -lt $Text.Length; $i++){
-        while($temp.Length -lt 5){
+
+    #Variables
+    $result = "";
+
+    #Constants
+    Set-Variable -name BaconianEncrypt26 -Option Constant -value(
+        @{   
+            'A' = "aaaaa";
+            'B' = "aaaab";
+            'C' = "aaaba";
+            'D' = "aaabb";
+            'E' = "aabaa";
+            'F' = "aabab";
+            'G' = "aabba";
+            'H' = "aabbb";
+            'I' = "abaaa";
+            'J' = "abaab";
+            'K' = "ababa";
+            'L' = "ababb";
+            'M' = "abbaa";
+            'N' = "abbab";
+            'O' = "abbba";
+            'P' = "abbbb";
+            'Q' = "baaaa";
+            'R' = "baaab";
+            'S' = "baaba";
+            'T' = "baabb";
+            'U' = "babaa";
+            'V' = "babab";
+            'W' = "babba";
+            'X' = "babbb";
+            'Y' = "bbaaa";
+            'Z' = "bbaab";
+        }
+    )
+
+    Set-Variable -name BaconianEncrypt24 -Option Constant -value(
+        @{
+            'A' = "aaaaa";
+            'B' = "aaaab";
+            'C' = "aaaba";
+            'D' = "aaabb";
+            'E' = "aabaa";
+            'F' = "aabab";
+            'G' = "aabba";
+            'H' = "aabbb";
+            'I' = "abaaa";
+            'J' = "abaaa";
+            'K' = "abaab";
+            'L' = "ababa";
+            'M' = "ababb";
+            'N' = "abbaa";
+            'O' = "abbab";
+            'P' = "abbba";
+            'Q' = "abbbb";
+            'R' = "baaaa";
+            'S' = "baaab";
+            'T' = "baaba";
+            'U' = "baabb";
+            'V' = "baabb";
+            'W' = "babaa";
+            'X' = "babab";
+            'Y' = "babba";
+            'Z' = "babbb";
+        }
+    )
+    Set-Variable -name BaconianDecrypt26 -Option Constant -value(
+        @{
+            "aaaaa" = 'A';
+            "aaaab" = 'B';
+            "aaaba" = 'C';
+            "aaabb" = 'D';
+            "aabaa" = 'E';
+            "aabab" = 'F';
+            "aabba" = 'G';
+            "aabbb" = 'H';
+            "abaaa" = 'I';
+            "abaab" = 'J';
+            "ababa" = 'K';
+            "ababb" = 'L';
+            "abbaa" = 'M';
+            "abbab" = 'N';
+            "abbba" = 'O';
+            "abbbb" = 'P';
+            "baaaa" = 'Q';
+            "baaab" = 'R';
+            "baaba" = 'S';
+            "baabb" = 'T';
+            "babaa" = 'U';
+            "babab" = 'V';
+            "babba" = 'W';
+            "babbb" = 'X';
+            "bbaaa" = 'Y';
+            "bbaab" = 'Z';
+        }
+    )
+    Set-Variable -name BaconianDecrypt24 -Option Constant -value(
+        @{
+            "aaaaa" = "A";
+            "aaaab" = "B";
+            "aaaba" = "C";
+            "aaabb" = "D";
+            "aabaa" = "E";
+            "aabab" = "F";
+            "aabba" = "G";
+            "aabbb" = "H";
+            "abaaa" = "(I/J)";
+            "abaab" = "K";
+            "ababa" = "L";
+            "ababb" = "M";
+            "abbaa" = "N";
+            "abbab" = "O";
+            "abbba" = "P";
+            "abbbb" = "Q";
+            "baaaa" = "R";
+            "baaab" = "S";
+            "baaba" = "T";
+            "baabb" = "(U/V)";
+            "babaa" = "W";
+            "babab" = "X";
+            "babba" = "Y";
+            "babbb" = "Z";
+        }
+    )
+
+    #Encrypt
+    if(-not $Decrypt.IsPresent){
+        #Select table
+        if($Modern.IsPresent){
+            $table = $BaconianEncrypt26;
+        }
+        else{
+            $table = $BaconianEncrypt24;
+        }        
+        #Encrypt
+        for($i = 0; $i -lt $Text.Length; $i++){
             if($Text[$i] -eq " "){
-                $result += " ";  
-                $i++;
+                $result += " ";
             }
-            else{
-                $temp += $Text[$i];
-                $i++;
+            else {
+                $result += $table.[string]$Text[$i];
             }
         }
-        $result += [string]$BaconianDecrypt26[$temp];
-        $temp = "";
-        $i--;
     }
-    return $result;
-}
-
-function BaconianCipher24_Decrypt([string]$Text) {
-    <#
-        .SYNOPSIS
-            Decrypts a string of text with a 26 character baconian cipher
-        .DESCRIPTION
-            Decrypts a string of text consisting of sets of 5 a's and b's using a baconian cipher. 
-            These sets of strings are not deliminated and decryption works properly wth spaces. 
-            This traditional version of the cipher has two sets of letters that share the same 
-            code I/J and U/V.
-        .EXAMPLE
-            BaconianCipher24_Decrypt "aabbbaabaaababbababbabbba baabbaabbbaabaabaaabaabaa"
-            > "HELLO THERE"
-        .INPUTS
-            [string] Text : The text to be decrypted using the baconian cipher.
-    #>
-    $Text = $Text.ToUpper();
-    [string]$result = "";
-    [string]$temp = "";
-    for($i = 0; $i -lt $Text.Length; $i++){
-        while($temp.Length -lt 5){
-            if($Text[$i] -eq " "){
-                $result += " ";  
-                $i++;
-            }
-            else{
-                $temp += $Text[$i];
-                $i++;
-            }
+    #Decrypt
+    else{
+        #Select table
+        if($Modern.IsPresent){
+            $table = $BaconianDecrypt26;
         }
-        $result += [string]$BaconianDecrypt24[$temp];
-        $temp = "";
-        $i--;
+        else{
+            $table = $BaconianDecrypt24;
+        }
+        for($i = 0; $i -lt $Text.Length; $i++){
+            while($temp.Length -lt 5){
+                if($Text[$i] -eq " "){
+                    $result += " ";  
+                    $i++;
+                }
+                else{
+                    $temp += $Text[$i];
+                    $i++;
+                }
+            }
+            $result += [string]$table[$temp];
+            $temp = "";
+            $i--;
+        }
     }
     return $result;
 }

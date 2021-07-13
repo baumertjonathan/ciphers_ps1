@@ -32,9 +32,11 @@ function AffineCipher {
     $text = $text.ToLower();
     $text = $text.Replace(" ", "");
 
-    #variables
-    $alphabet = "abcdefghijklmnopqrstuvwxyz";
+    #Variables
     $result = "";
+
+    #Constants
+    Set-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
 
     #Validate a and b
     if($a -lt 1 -or $a -gt 26){
