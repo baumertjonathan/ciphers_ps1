@@ -4,7 +4,7 @@
 The Atbash cipher is a cipher where in the alphabet is mapped in reverse so the first letter becomes the last letter, the second becomes the second to last and so on. [Wikipedia](https://en.wikipedia.org/wiki/Atbash)
 
 ## Autokey Cipher
-The autokey cipher is a ciphere where each letter in plaintext is mapped to the [tabula recta](https://en.wikipedia.org/wiki/Tabula_recta) using a key wod or phrase [Wikipedia](https://en.wikipedia.org/wiki/Autokey_cipher)
+The autokey cipher is a cipher where each letter in plaintext is mapped to the [tabula recta](https://en.wikipedia.org/wiki/Tabula_recta) using a key wod or phrase [Wikipedia](https://en.wikipedia.org/wiki/Autokey_cipher). The keyword is appended with the text if it is too short for the mapping. 
 
 ## Baconian Cipher
 The Baconian cipher is a type of mesage encoding wherea as each letter of the plaintext is replaced by a group of five letters consisting of either 'a' or 'b'. [Wikipedia](https://en.wikipedia.org/wiki/Bacon%27s_cipher)
@@ -28,3 +28,6 @@ which is then read from left to right providing the following ciphertext: 'horel
 ## Playfair Cipher
 The Playfair cipher is a type of diagram substitution cipher where the key is maped to a 5x5 square filling in the rest of the alphabet afterward (typically i/j are combined) then the text is split into pairs and a series of rules determine how those letters are substituted using the diagram. 
 [Wikipedia](https://en.wikipedia.org/wiki/Playfair_cipher)
+
+## Porta Cipher
+The porta cipher is a cipher where each letter of plaintext is mapped to a tabula using a keyword, this is a tabula specific to this cipher. The key is repeated if it is shorter than the text being encoded. 
