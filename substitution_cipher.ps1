@@ -1,92 +1,65 @@
-[string]$alphabet = "abcdefghijklmnopqrstuvwxyz";
-
-function IsValidKey($key) {
+function SubstitutionCipher{
+    
     <#
         .SYNOPSIS
-            checks the validity of a key for a substitution cipher
-        .DESCRIPTION
-            Checks that a key is 26 characters long and has no repeated characters. 
-    #>
-
-    $key = $key.ToLower();
-    if($key.length -ne 26){
-        return $False
-    }
-    for($i = 0; $i -lt $key.length; $i++){
-        for ($j = 0; $j -lt $key.length; $j++){
-            if(($key[$i] -eq $key[$j] -and ($i -ne $j))){
-                return $False;
-            }
-        }
-    }
-    return $True;
-}
-function SubstitutionCipher_Encrypt([string]$text, [string]$key) {
-    <#
-        .SYNOPSIS
-            Encrypts a standard string of alphabetical characters with a substitution cipher
-        .DESCRIPTION
-            Takes a 26 letter key and a string of any length (below 2147483647) to encrypt. 
-            A Substitution cipher replaces each letter of the alphabet with another letter from 
-            a key.
-            NOTE: This, like powershell itself is case-insensitive. 
-        .EXAMPLE
-            SubstitutionCipher_Encrypt "Hello There" "qwertyuiopasdfghjklzxcvbnm"
-            >> "tssg zitkt"
-        .INPUTS
-            [string] Text: the text to be encrypted
-            [string] Key: The key to be used in encrypting/decrypting the message (26 characters)
-    #>
-    $text = $text.ToLower();
-    $key = $text.ToLower();
-    [string]$output = "";
-    if (IsValidKey($key)){
-        for ($i = 0; $i -lt $text.length; $i++){
-            if($text[$i] -eq " "){
-                $output += " ";
-                continue;
-            }
-            [int]$oldCharIndex = $alphabet.IndexOf($text[$i]);
-            $output += $key[$oldCharIndex];
-        }
-        return $output;
-    }
-    else{
-        throw "Invalid Key"
-    }
-}
-
-function SubstitutionCipher_Decrypt([string]$text, [string]$key) {
-        <#
-        .SYNOPSIS
-            Decrypts a standard string of alphabetical characters with a substitution cipher
+            Encrypts or decrypts a string using a substitution cipher
         .DESCRIPTION
             Takes a 26 letter key and a string of any length (below 2147483647) to decrypt. 
             A Substitution cipher replaces each letter of the alphabet with another letter from 
             a key.
             NOTE: This, like powershell itself is case-insensitive. 
         .EXAMPLE
-            SubstitutionCipher_Encrypt "tssg zitkt" "qwertyuiopasdfghjklzxcvbnm"
-            >> "Hello There"
+            SubstitutionCipher -Text "Hello There" -Key "qwertyuiopasdfghjklzxcvbnm"
+            > itssg zitkt
+        .EXAMPLE
+            SubstitutionCipher -Text "itssg zitkt" -Key "qwertyuiopasdfghjklzxcvbnm" -Decrypt
+            > hello there
         .INPUTS
-            [string] Text: the text to be decrypted.
-            [string] Key: The key to be used in encrypting/decrypting the message (26 characters)
+            [switch] Decrypt : If present decrypts the string of text rather than encrypting it. 
+            [string] Text    : The string of text to be encrypted or decrypted.
+            [string] Key     : The key to be used in encrypting or decrypting the string of text. 
     #>
-    $text = $text.ToLower();
-    $key = $key.ToLower();
+
+    Param(
+        [switch]$Decrypt,
+        [string]$Text,
+        [string]$Key
+    )
+
+    #Normalize Inputs
+    $Text = $Text.ToLower();
+    $Key = $Key.ToLower();
+
+    #Variables
     [string]$output = "";
-    if(IsValidKey($key)){
-        for($i = 0; $i -lt $text.length; $i++){
-            if($text[$i] -eq " "){
-                $output+= " ";
-                continue;
+
+    #Constants
+    Set-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
+
+    #Validate
+    if($key.length -ne 26){
+        throw "The key must be 26 characters long"
+    }
+    for($i = 0; $i -lt $key.length; $i++){
+        for ($j = 0; $j -lt $key.length; $j++){
+            if(($key[$i] -eq $key[$j] -and ($i -ne $j))){
+                throw "The key must not have any repeating values"
             }
-            [int]$index = $key.IndexOf($text[$i]);
-            $output += $alphabet[$index];
         }
-        return $output;
     }
-    else{
-        throw "Invalid Key"
+
+    #Encrypt/Decrypt
+    for($i = 0; $i -lt $Text.Length; $i++){
+        if($Text[$i] -eq " "){
+            $output += " ";
+            continue;
+        }
+        if(-not $Decrypt.IsPresent){
+            $output += $key[$alphabet.IndexOf($Text[$i])];
+        }
+        else{
+            $output += $alphabet[$key.IndexOf($Text[$i])];
+        }
     }
+    return $output;
 }
