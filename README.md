@@ -29,5 +29,8 @@ which is then read from left to right providing the following ciphertext: 'horel
 The Playfair cipher is a type of diagram substitution cipher where the key is maped to a 5x5 square filling in the rest of the alphabet afterward (typically i/j are combined) then the text is split into pairs and a series of rules determine how those letters are substituted using the diagram. 
 [Wikipedia](https://en.wikipedia.org/wiki/Playfair_cipher)
 
+## Polybius Cipher
+The Polybius cipher is a substitution cipher using the [Polybius Square](https://en.wikipedia.org/wiki/Polybius_square) each letter is replaced with its coordinates in the square. 
+
 ## Porta Cipher
 The porta cipher is a cipher where each letter of plaintext is mapped to a tabula using a keyword, this is a tabula specific to this cipher. The key is repeated if it is shorter than the text being encoded. 
