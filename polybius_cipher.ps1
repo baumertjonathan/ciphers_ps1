@@ -1,10 +1,29 @@
 function PolybiusCipher {
     <#
         .SYNOPSIS
+            Encrypts or decrypts a string using a polybius square
         .DESCRIPTION
+            Encrypts a string by replacing each letter with its coordinates on a polybius square
+            Decrypts a string by taking the coordinates and replacing them wiht the letter from the square
+            The key taken is used to create the square, row by row. 
+            The key must be 25 characters in length with no repeating letters. traditionally i and j share a space.
+            The default key is the traditional polybius square for the latin alphabet:
+            a b c d e
+            f g h i k
+            l m n o p
+            q r s t u
+            v w x y z
         .EXAMPLE
+            PolybiusCipher -Text "Hello There" -Key "qwertyuiopasdfghklzxcvbnm"
+            > 30 02 32 13 04 30 02 03 02
         .EXAMPLE
+            PolybiusCipher -Text "30 02 32 32 13 04 30 02 03 02" -Key "qwertyuiopasdfghklzxcvbnm" -Decrypt
+            > hellothere
         .INPUTS
+            [switch] Decrypt : If present decrypts the text rather than encrypting
+            [string] Text    : The string of text to be encrypted or decrypted
+            [string] Key     : The key to be used in encrypting or decrypting, has a default value of "abcdefghiklmnopqrstuvwxyz"
+        
     #>
 
     Param(
