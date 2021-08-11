@@ -90,7 +90,6 @@ function AutokeyCipher {
             $result += $alphabet[$p_int];
             $Key += $alphabet[$p_int];
         }
-        Write-Host($Key);
     }
     #Return
     return $result;
