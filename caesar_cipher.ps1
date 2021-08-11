@@ -26,6 +26,7 @@ function CaesarCipher {
     #Normalize Inputs
     $Text = $Text.ToLower();
 
+    #Encrypt/Decrypt
     $textascii = [int[]][char[]]"$text";
     $encrypt = foreach($ascii in $textascii){
         if($ascii -eq 32){
