@@ -112,4 +112,4 @@ Column: 1 0 2 2 2 0 2
 ```
 
 ## Vigenère Cipher
-The vigenere cipher works by substituting each letter with the corrosponding letter in the key in the tabula recta. If the key is shorter than the text it is repeated untill it is as long. [Wikipedia](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher)
+The vigenere cipher works by substituting each letter with the corrosponding letter in the key in the [tabula recta](https://en.wikipedia.org/wiki/Tabula_recta). If the key is shorter than the text it is repeated untill it is as long. [Wikipedia](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher)
