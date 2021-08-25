@@ -9,6 +9,9 @@ The autokey cipher is a cipher where each letter in plaintext is mapped to the [
 ## Baconian Cipher
 The Baconian cipher is a type of mesage encoding wherea as each letter of the plaintext is replaced by a group of five letters consisting of either 'a' or 'b'. [Wikipedia](https://en.wikipedia.org/wiki/Bacon%27s_cipher)
 
+## Beaufort Cipher
+The Beaufort cipher is a type of substitution cipher using the [tabula recta](https://en.wikipedia.org/wiki/Tabula_recta) it works similarly to the vigenere cipher except rather than finding the intersiection of the key and letter, you find the column with the letter then within that column of that you find the key, then the head letter of that row is the result. 
+
 ## Bifid Cipher
 The Bifid cipher combines the Polybius square with transposition, it takes a key (the polybius square) and a period, used in transposition. [Wikipedia](https://en.wikipedia.org/wiki/Bifid_cipher)
 
