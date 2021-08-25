@@ -14,23 +14,36 @@ The Bifid cipher combines the Polybius square with transposition, it takes a key
 
 Here is an example of how this might work in practice with a key of "qwertyuiopasdfghklzxcvbnm", a period of 3, and text of "Testing"
 
-A Polybius square would be formed as such from the key
-q w e r t
-y u i o p
-a s d f g
-h k l z x
-c v b n m
-
+A Polybius square would be formed as such from the key 
+```
+q w e r t 
+y u i o p 
+a s d f g 
+h k l z x 
+c v b n m 
+```
 The text to be encrypted will then be put through getting the following results
-Text  : t e s t i n g
-Row   : 0 0 2 0 1 4 2
-Column: 4 2 1 4 2 3 4
-
+```
+Text  : t e s t i n g 
+Row   : 0 0 2 0 1 4 2 
+Column: 4 2 1 4 2 3 4 
+```
 Then the data will be split by period
+```
 Text  : tes tin g
 Row   : 002 014 2
 Column: 421 423 4
-
+```
+The data is then combined:
+```
+002421 014423 24
+```
+Encipher again
+```
+Text  : q g s w m f g 
+Row   : 0 2 2 0 4 2 2
+Column: 0 4 1 1 4 3 4
+```
 ## Caesar Cipher
 The Caesar cipher is a type of substitution cipher where each letter is replaced by another letter a fixed number of positions away in the alphabet. [Wikipedia](https://en.wikipedia.org/wiki/Caesar_cipher)
 
@@ -61,31 +74,36 @@ A simple substitution cipher is a cipher where each letter of an alphabet is rep
 combines substitution and transposition ciphers, it takes a key (three squares of characters) and a period (to be used in transposition)
 [Wikipedia](https://en.wikipedia.org/wiki/Trifid_cipher)
 
-Here is an example with a key of "qwertyuiopasdfghjklzxcvbnm.", a period of 3, and text of "Testing"
-
-==Squares==
+Here is an example with a key of "qwertyuiopasdfghjklzxcvbnm.", a period of 3, and text of "Testing" <br />
+Three squares are created from the key as shown below:
+```
   0       1       2
 q w e   p a s   l z x
 r t y   d f g   c v b 
 u i o   h j k   n m .
-
+```
+The text is then be put through the squares producing the following result
+```
 Text  : t e s t i n g
 Box   : 0 0 1 0 0 2 1
 Row   : 1 0 0 1 2 2 1
 Column: 1 2 2 1 1 0 2
-
+```
 Split by periods
+```
 tes tin g
 001 002 1
 100 122 1
 122 110 2
-
+```
 Combine
+```
 001100122 002122110 112
-
+```
 Encipher again
+```
 Text  : w p k e k d g
 Box   : 0 1 1 0 1 1 1
 Row   : 0 0 2 0 2 1 1
 Column: 1 0 2 2 2 0 2
-
+```
