@@ -15,15 +15,15 @@ function SubstitutionCipher{
             SubstitutionCipher -Text "itssg zitkt" -Key "qwertyuiopasdfghjklzxcvbnm" -Decrypt
             > hello there
         .INPUTS
-            [switch] Decrypt : If present decrypts the string of text rather than encrypting it. 
-            [string] Text    : The string of text to be encrypted or decrypted.
-            [string] Key     : The key to be used in encrypting or decrypting the string of text. 
+            [Switch] Decrypt : If present decrypts the string of text rather than encrypting it. 
+            [String] Text    : The string of text to be encrypted or decrypted.
+            [String] Key     : The key to be used in encrypting or decrypting the string of text. 
     #>
 
     Param(
-        [switch]$Decrypt,
-        [string]$Text,
-        [string]$Key
+        [Switch]$Decrypt,
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][String]$Text,
+        [Parameter(Mandatory=$true)][String]$Key
     )
 
     #Normalize Inputs
@@ -31,7 +31,7 @@ function SubstitutionCipher{
     $Key = $Key.ToLower();
 
     #Variables
-    [string]$output = "";
+    [String]$output = "";
 
     #Constants
     Set-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;

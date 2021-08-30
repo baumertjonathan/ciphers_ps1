@@ -30,14 +30,14 @@ function BaconianCipher {
     Param(
         [switch]$Decrypt,
         [switch]$Modern,
-        [string]$Text
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string]$Text
     )
 
     #Normalize Text
     $Text = $Text.ToUpper();
 
     #Variables
-    $result = "";
+    New-Variable -Name Output -Value([String]"");
 
     #Constants
     Set-Variable -name BaconianEncrypt26 -Option Constant -value(
@@ -172,10 +172,10 @@ function BaconianCipher {
         #Encrypt
         for($i = 0; $i -lt $Text.Length; $i++){
             if($Text[$i] -eq " "){
-                $result += " ";
+                $Output += " ";
             }
             else {
-                $result += $table.[string]$Text[$i];
+                $Output += $table.[string]$Text[$i];
             }
         }
     }
@@ -191,7 +191,7 @@ function BaconianCipher {
         for($i = 0; $i -lt $Text.Length; $i++){
             while($temp.Length -lt 5){
                 if($Text[$i] -eq " "){
-                    $result += " ";  
+                    $Output += " ";  
                     $i++;
                 }
                 else{
@@ -199,10 +199,10 @@ function BaconianCipher {
                     $i++;
                 }
             }
-            $result += [string]$table[$temp];
+            $Output += [string]$table[$temp];
             $temp = "";
             $i--;
         }
     }
-    return $result;
+    return $Output;
 }

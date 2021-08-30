@@ -20,16 +20,16 @@ function PolybiusCipher {
             PolybiusCipher -Text "30 02 32 32 13 04 30 02 03 02" -Key "qwertyuiopasdfghklzxcvbnm" -Decrypt
             > hellothere
         .INPUTS
-            [switch] Decrypt : If present decrypts the text rather than encrypting
-            [string] Text    : The string of text to be encrypted or decrypted
-            [string] Key     : The key to be used in encrypting or decrypting, has a default value of "abcdefghiklmnopqrstuvwxyz"
+            [Switch] Decrypt : If present decrypts the text rather than encrypting
+            [String] Text    : The string of text to be encrypted or decrypted
+            [String] Key     : The key to be used in encrypting or decrypting, has a default value of "abcdefghiklmnopqrstuvwxyz"
         
     #>
 
     Param(
-        [switch]$Decrypt,
-        [string]$Text,
-        [string]$Key = "abcdefghiklmnopqrstuvwxyz"
+        [Switch]$Decrypt,
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][String]$Text,
+        [String]$Key = "abcdefghiklmnopqrstuvwxyz"
     )
 
     #Normalize inputs
@@ -37,8 +37,8 @@ function PolybiusCipher {
     $Key = $Key.ToLower();
 
     #Variables
-    [string]$output = "";
-    $polybiusTable = New-Object 'string[,]' 5,5;
+    [String]$Output = "";
+    [Array]$polybiusTable = New-Object 'string[,]' 5,5;
 
     #Validate
     if($Text -notmatch "^[a-z ]*$"  -and (-not $Decrypt.IsPresent)){
@@ -73,7 +73,7 @@ function PolybiusCipher {
             for($j = 0; $j -lt 5; $j++){
                 for($k = 0; $k -lt 5; $k++){
                     if ($polybiusTable[$j,$k] -eq $Text[$i]){
-                        $result += [string]$j + [string]$k + " ";
+                        $Output += [string]$j + [string]$k + " ";
                     }
                 }
             }
@@ -83,10 +83,10 @@ function PolybiusCipher {
     else{
         $SplitInput = $Text.Split(" ");
         foreach ($pair in $SplitInput) {
-            $result += $polybiusTable[[convert]::ToInt32($pair[0], 10), [convert]::ToInt32($pair[1], 10)];
+            $Output += $polybiusTable[[convert]::ToInt32($pair[0], 10), [convert]::ToInt32($pair[1], 10)];
         }
 
     }
 
-    return $result;
+    return $Output;
 }

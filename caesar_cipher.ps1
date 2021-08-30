@@ -19,29 +19,36 @@ function CaesarCipher {
     #>
     Param (
         [switch]$Decrypt,
-        [string]$Text,
-        [int]$Key
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string]$Text,
+        [Parameter(Mandatory=$true)][int]$Key
     )
 
     #Normalize Inputs
     $Text = $Text.ToLower();
 
+    #Variables
+    New-Variable -name Output -value([string]"");
+    #Constants
+    New-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
+
     #Encrypt/Decrypt
-    $textascii = [int[]][char[]]"$text";
-    $encrypt = foreach($ascii in $textascii){
-        if($ascii -eq 32){
-            $ascii;
-            continue;
-        }
-        if($Decrypt.IsPresent){
-            $ascii - $key;
+    for($i = 0; $i -lt $Text.Length; $i++){
+        if($Text[$i] -eq " "){
+            $Output += " ";
         }
         else{
-            $ascii + $key;
+            if($Decrypt.IsPresent){
+                $Output += $alphabet[($alphabet.IndexOf($Text[$i]) - $Key)]; 
+            }
+            else{
+                #wraparound only works in the negatives in powershell
+                [int]$index = $alphabet.IndexOf($text[$i])+$Key
+                if($index -gt 26){
+                    $index = $index-26
+                }
+                $Output += $alphabet[$index]; 
+            }
         }
     }
-    $toText = [char[]]$encrypt;
-    $toString = -join $toText;
-    
-    return $toString;
+    return $Output;
 }

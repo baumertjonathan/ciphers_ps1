@@ -20,8 +20,8 @@ function AutokeyCipher {
 
     Param(
         [switch] $Decrypt,
-        [string] $Text,
-        [string] $Key
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string] $Text,
+        [Parameter(Mandatory=$true)][string] $Key
     )
 
     #Normalize text and key
@@ -31,9 +31,9 @@ function AutokeyCipher {
     $Key = $Key.Replace(" ", "");
 
     #Variables
-    $result = "";
-    $p_int = 0;
-    $k_int = 0;
+    New-Variable -Name Output -Value([String]"");
+    New-Variable -Name p_int -Value([int]0);
+    New-Variable -Name k_int -Value([int]0);
 
     #Constants
     Set-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
@@ -75,7 +75,7 @@ function AutokeyCipher {
         for($i = 0; $i -lt $Text.Length; $i++){
             $p_int = $alphabet.IndexOf($Text[$i]);
             $k_int = $alphabet.IndexOf($Key[$i]);
-            $result += $tabula_recta[$p_int][$k_int];
+            $Output += $tabula_recta[$p_int][$k_int];
         }
     }
     #Decrypt
@@ -87,10 +87,10 @@ function AutokeyCipher {
                     $p_int = $j
                 }
             }
-            $result += $alphabet[$p_int];
+            $Output += $alphabet[$p_int];
             $Key += $alphabet[$p_int];
         }
     }
     #Return
-    return $result;
+    return $Output;
 }

@@ -49,19 +49,17 @@ function TrifidCipher {
 
     Param(
         [switch]$Decrypt,
-        [string]$Text,
-        [string]$Key,
-        [int]   $Period
+        [Parameter(Mandatory = $true, ValueFromPipeline=$true)][string]$Text,
+        [Parameter(Mandatory = $true)][string]$Key,
+        [Parameter(Mandatory = $true)][int]   $Period
     )
     #Variables
     [string]$validatestring = "abcdefghijklmnopqrstuvwxyz.";
-    [string]$allInputString = "";
     $Box1 = New-Object 'string[,]' 3,3;
     $Box2 = New-Object 'string[,]' 3,3;
     $Box3 = New-Object 'string[,]' 3,3;
     $EncodedArray = @();
     $PeriodArray = @();
-    $PeriodString = "";
     
     #Normalize Inputs
     $Key = $Key.ToLower();

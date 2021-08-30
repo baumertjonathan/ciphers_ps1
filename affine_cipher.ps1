@@ -18,25 +18,25 @@ function AffineCipher {
             > hellothere
         .INPUTS
             [switch] Decrypt : If present decrypts rather than encrypts
-            [string] Text    : The string of text to be encrypted or decrypted
+            [string] Text    : The string of text to be encrypted or decrypted. Accepts pipeline input
             [int]    a       : The first number to be used in encrypting (must be coprime with 26)
             [int]    b       : The second number to be used in encrypting
     #>
     Param(
         [Switch]$Decrypt,
-        [string]$Text,
-        [int]$a,
-        [int]$b
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string]$Text,
+        [Parameter(Mandatory=$true)][Int]$a,
+        [Parameter(Mandatory=$true)][Int]$b
     )
     #normalize text
     $text = $text.ToLower();
     $text = $text.Replace(" ", "");
 
     #Variables
-    $result = "";
+    New-Variable -name Output -value([string]"");
 
     #Constants
-    Set-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
+    New-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
 
     #Validate a and b
     if($a -lt 1 -or $a -gt 26){
@@ -62,9 +62,9 @@ function AffineCipher {
         for($i = 0; $i -lt $Text.Length; $i++){
             $p = $alphabet.IndexOf($Text[$i]);
             $c = (($a * $p + $b) % 26);
-            $result += $alphabet[$c];
+            $Output += $alphabet[$c];
         }
-        return $result;
+        return $Output;
     }
     #Decrypt
     else{
@@ -80,8 +80,8 @@ function AffineCipher {
         for($i = 0; $i -lt $Text.Length; $i++){
             $c = $alphabet.IndexOf($Text[$i]);
             $p = ($a_inv * ($c - $b)) % 26;
-            $result += $alphabet[$p];
+            $Output += $alphabet[$p];
         }
-        return $result;
+        return $Output;
     }
 }

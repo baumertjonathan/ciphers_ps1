@@ -47,9 +47,9 @@ function BifidCipher {
 
     Param (
         [switch]$Decrypt,
-        [string]$Text,
-        [string]$Key,
-        [int]$Period
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string]$Text,
+        [Parameter(Mandatory=$true)][string]$Key,
+        [Parameter(Mandatory=$true)][int]$Period
     )
 
     #Normalize Inputs
@@ -58,11 +58,11 @@ function BifidCipher {
     $Key = $Key.ToLower();
 
     #Variables
-    [string]$output = "";
-    $polybiusTable = New-Object 'string[,]' 5,5; 
-    $rowArray = New-Object 'string[]' $Text.Length;
-    $columnArray = New-Object 'string[]' $Text.Length;
-    $periodArray = @()
+    New-Variable -Name Output -Value([string]"");
+    [Array]$polybiusTable = New-Object 'string[,]' 5,5; 
+    [Array]$rowArray = New-Object 'string[]' $Text.Length;
+    [Array]$columnArray = New-Object 'string[]' $Text.Length;
+    [Array]$periodArray = @()
 
     #Validate
     if($Period -ge $Text.Length){

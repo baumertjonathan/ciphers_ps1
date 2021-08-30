@@ -22,28 +22,28 @@ function RailFenceCipher {
             --l---h---
             > HorelTeelh
         .INPUTS
-            [switch] Decrypt  : If Present Decrypts the string rather than encrypting it.
-            [switch] DrawRail : If Present uses WriteHost to draw the rail used
-            [string] Text     : The string of text to be encrypted or decrypted
-            [int]    Rails    : The number of rails to be used in the cipher. 
+            [Switch] Decrypt  : If Present Decrypts the string rather than encrypting it.
+            [Switch] DrawRail : If Present uses WriteHost to draw the rail used
+            [String] Text     : The string of text to be encrypted or decrypted
+            [Int]    Rails    : The number of rails to be used in the cipher. 
     #>
     Param(
-        [switch]$Decrypt,
-        [switch]$DrawRail,
-        [string]$Text,
-        [int]$Rails
+        [Switch]$Decrypt,
+        [Switch]$DrawRail,
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][String]$Text,
+        [Parameter(Mandatory=$true)][Int]$Rails
     )
 
     #Normalize inputs
     $Text = $Text.Replace(" ", "");
 
     #Variables
-    $result = "";
-    $rail = New-Object 'string[,]' $Text.Length, $Rails;
-    $Direction = $true;
-    $j = 0;
-    $k = 0;
-    $temp = "";
+    [String]$Output = "";
+    [Array]$rail = New-Object 'string[,]' $Text.Length, $Rails;
+    [Bool]$Direction = $true;
+    [Int]$j = 0;
+    [Int]$k = 0;
+    [String]$temp = "";
 
     #Validate
     if($Text.Length -lt $Rails){
@@ -84,7 +84,7 @@ function RailFenceCipher {
                     $k++;
                 }
                 else{
-                    $result += $rail[$j, $i];
+                    $Output += $rail[$j, $i];
                 }
             }
 
@@ -106,7 +106,7 @@ function RailFenceCipher {
         $Direction = $true;
         $j = 0;
         for($i = 0; $i -lt $Text.Length; $i ++){
-            $result += $rail[$i, $j];
+            $Output += $rail[$i, $j];
             if($Direction){
                 $j++
             }
@@ -121,6 +121,6 @@ function RailFenceCipher {
             }
         }
     }
-    return $result;
+    return $Output;
 }
 

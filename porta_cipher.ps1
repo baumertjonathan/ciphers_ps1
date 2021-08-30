@@ -1,4 +1,4 @@
-function PortaCipher([string]$Text, [string]$Key) {
+function PortaCipher {
     <#
         .SYNOPSIS
             Encrypts and decrypts a string of text using a Porta cipher
@@ -13,12 +13,16 @@ function PortaCipher([string]$Text, [string]$Key) {
             PortaCipher "qotpidqojv" "Turing"
             > hellothere
         .INPUTS
-            [string] Text : The text to be encoded or decoded using the Porta Cipher
+            [string] Text : The text to be encoded or decoded using the Porta Cipher. Accepts pipeline input
             [string] Key  : The key to be used in encoding or decoding the text. 
     #>
 
+    Param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][String]$Text,
+        [Parameter(Mandatory=$true)][String]$Key
+    )
     #tables
-    $tabula = @(
+    [Array]$tabula = @(
     ( 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm' ),
     ( 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'n', 'm', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l' ),
     ( 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'n', 'o', 'l', 'm', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k' ),
@@ -34,7 +38,7 @@ function PortaCipher([string]$Text, [string]$Key) {
     ( 'z', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'a' )
 )
 
-    $row_map = @{
+    [Hashtable]$row_map = @{
         'a' = 0;
         'b' = 0;
         'c' = 1;
@@ -63,14 +67,14 @@ function PortaCipher([string]$Text, [string]$Key) {
         'z' = 12;
     }
 
-    $alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    Set-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
 
     #normalizing inputs
     $Text = $Text.Replace(" ", "");
     $Text = $Text.ToLower();
     $Key = $Key.Replace(" ", "");
     $key = $Key.ToLower();
-    $result = "";
+    $Output = "";
 
     #adjusting key size
     while($Key.Length -lt $Text.Length){
@@ -79,8 +83,8 @@ function PortaCipher([string]$Text, [string]$Key) {
 
     #Encrypting/Decrypting
     for ($i = 0; $i -lt $Text.Length; $i++){
-        $result += $tabula[$row_map[[string]$Key[$i]]][$alphabet.IndexOf($Text[$i])];
+        $Output += $tabula[$row_map[[string]$Key[$i]]][$alphabet.IndexOf($Text[$i])];
     }
-    return $result;
+    return $Output;
 }
 

@@ -14,19 +14,19 @@ function AtbashCipher {
             AtbashCipher "svool gsviv"
             > hello there
         .INPUTS
-            [string] Text : The string to be encrypted using the Atbash Cipher
+            [string] Text : The string to be encrypted using the Atbash Cipher. Accepts pipeline input
     #>
 
     Param (
-        [string] $Text
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string]$Text
     )
     
     #Variables
-    $output = "";
+    New-Variable -name Output -value([String]"");
 
     #Constants
-    Set-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
-    Set-Variable -name tebahpla -value([string]"zyxwvutsrqponmlkjihgfedcba") -Option Constant;
+    New-Variable -name alphabet -value([string]"abcdefghijklmnopqrstuvwxyz") -Option Constant;
+    New-Variable -name tebahpla -value([string]"zyxwvutsrqponmlkjihgfedcba") -Option Constant;
     
     #Normalize Text
     $Text = $Text.ToLower();

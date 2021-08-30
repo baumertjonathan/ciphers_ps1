@@ -19,8 +19,8 @@ function VigenereCipher {
 
     Param (
         [switch] $Decrypt,
-        [string] $Text,
-        [string] $Key
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string] $Text,
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string] $Key
     )
 
     #Constants

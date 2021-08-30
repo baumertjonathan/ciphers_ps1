@@ -19,16 +19,16 @@ function PlayfairCipher{
             PlayfairCipher -Text "kfnwiwbqdifw" -Key "AlanTuring" -Decrypt -CleanOutput
             > hellothere
         .INPUTS
-            [switch] Decrypt     : If present decrypts the string rather than encrypting.
-            [switch] CleanOutput : If present removes excess 'x' from the output, this can casue issues in some words(ie: annex, hexes)
-            [string] Text        : The string of text to be encrypted or decrypted using the cipher.
-            [string] Key         : The key to be used in encrypting or decrypting the text. 
+            [Switch] Decrypt     : If present decrypts the string rather than encrypting.
+            [Switch] CleanOutput : If present removes excess 'x' from the output, this can casue issues in some words(ie: annex, hexes)
+            [String] Text        : The string of text to be encrypted or decrypted using the cipher.
+            [String] Key         : The key to be used in encrypting or decrypting the text. 
     #>
     Param(
-        [switch]$Decrypt,
-        [switch]$CleanOutput,
-        [string]$Text,
-        [string]$Key
+        [Switch]$Decrypt,
+        [Switch]$CleanOutput,
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][String]$Text,
+        [Parameter(Mandatory=$true)][String]$Key
     )
 
     #Normalize Inputs
@@ -38,10 +38,10 @@ function PlayfairCipher{
     $Text = $Text.Replace(" ", "");
 
     #Variables
-    $Result = "";
-    $table = New-Object 'string[,]' 5,5; 
-    $key_it = 0;
-    $alpha_it = 0;
+    [String]$Output = "";
+    [Array]$table = New-Object 'string[,]' 5,5; 
+    [Int]$key_it = 0;
+    [Int]$alpha_it = 0;
     $edge = $null;
     $start = $null;
     $incrementer = $null;
@@ -50,7 +50,7 @@ function PlayfairCipher{
     Set-Variable -name playfaire_alphabet -value([string]"abcdefghiklmnopqrstuvwxyz") -Option Constant;
 
     #Make Playfair Table
-    $Key_no_duplicates = "" #the key with no repeats (takes first instance only)
+    [String]$Key_no_duplicates = "" #the key with no repeats (takes first instance only)
     for ($i = 0; $i -lt $key.Length; $i++){
         if ($Key_no_duplicates.IndexOf($key[$i]) -eq -1){
             $Key_no_duplicates += $key[$i];
@@ -124,8 +124,8 @@ function PlayfairCipher{
             else{
                 $b2 = $b_index.Item2 + $incrementer;
             }
-            $result += $table[$a_index.Item1, $a2];
-            $result += $table[$b_index.Item1, $b2];
+            $Output += $table[$a_index.Item1, $a2];
+            $Output += $table[$b_index.Item1, $b2];
         }
         # Column Rule
         elseif ($a_index.Item2 -eq $b_index.Item2) {
@@ -141,22 +141,22 @@ function PlayfairCipher{
             else{
                 $b1 = $b_index.Item1 + $incrementer;
             }
-            $result += $table[$a1, $a_index.Item2];
-            $result += $table[$b1, $b_index.Item2];
+            $Output += $table[$a1, $a_index.Item2];
+            $Output += $table[$b1, $b_index.Item2];
         }
         #Rectangle Rule
         else{
-            $result += $table[$a_index.Item1, $b_index.Item2];
-            $result += $table[$b_index.Item1, $a_index.Item2];
+            $Output += $table[$a_index.Item1, $b_index.Item2];
+            $Output += $table[$b_index.Item1, $a_index.Item2];
         }
     }
     if($Decrypt.IsPresent -and $CleanOutput.IsPresent){
-        for($i = 0; $i -lt $result.Length; $i++){
-            if(($result[$i] -eq "x") -and (($result[$i-1] -eq $result[$i+1]) -or ($i -eq $result.Length-1))){
-                $result = $result.remove($i, 1);
+        for($i = 0; $i -lt $Output.Length; $i++){
+            if(($Output[$i] -eq "x") -and (($Output[$i-1] -eq $Output[$i+1]) -or ($i -eq $Output.Length-1))){
+                $Output = $Output.remove($i, 1);
             }
         }
     }
 
-    return $Result;
+    return $Output;
 }

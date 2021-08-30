@@ -17,8 +17,8 @@ function BeaufortCipher {
     #>
 
     Param (
-        [string] $Text,
-        [string] $Key
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string] $Text,
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)][string] $Key
     )
 
     #Constants
@@ -55,7 +55,7 @@ function BeaufortCipher {
 
 
     #Variables
-    [string]$Output = "";
+    New-Variable -Name Output -Value([String]"");
 
     #Normalize Inputs
     $Text = $Text.ToLower();
