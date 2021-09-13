@@ -9,6 +9,8 @@ function BaconianCipher {
             This cipher traditionally uses a 24 letter alphabet with i/j sharing and u/v sharing. 
             The cipher can be toggled to  decrypt by adding the -Decrypt parameter
             The cipher can be toggled to use a 36 letter version of the cipher by adding the -Modern parameter 
+        .LINK
+            https://github.com/baumertjonathan/CIPHER_INFO/blob/main/BACONIAN_CIPHER.md
         .EXAMPLE
             BaconianCipher -Text "Very Cool"
             > baabbaabaabaaaababba aaabaabbababbabababa

@@ -10,6 +10,8 @@ function AffineCipher {
             D(x) = (a^-1)(x-b) mod m
             a must be coprime with 26. 
             both a and b must be between 1 and 26.
+        .LINK
+            https://github.com/baumertjonathan/CIPHER_INFO/blob/main/AFFINE_CIPHER.md
         .EXAMPLE
             AffineCipher -Text "Hello There" -a 5 -b 9
             > sdmmbasdqd

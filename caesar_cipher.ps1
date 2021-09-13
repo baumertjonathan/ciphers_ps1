@@ -6,6 +6,8 @@ function CaesarCipher {
             Takes a string of text and an int to shift the alphabet with. Each letter is replaced
             with a letter (key) characters away.
             NOTE: This, like most of powershell is case-insensitive. 
+        .LINK  
+            https://github.com/baumertjonathan/CIPHER_INFO/blob/main/CAESAR_CIPHER.md  
         .EXAMPLE
             CaesarCipher_Decrypt -Text "Hello There" -Key 3
             > khoor wkhuh

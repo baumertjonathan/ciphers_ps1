@@ -58,8 +58,8 @@ function TrifidCipher {
     $Box1 = New-Object 'string[,]' 3,3;
     $Box2 = New-Object 'string[,]' 3,3;
     $Box3 = New-Object 'string[,]' 3,3;
-    $EncodedArray = @();
-    $PeriodArray = @();
+    [Array]$EncodedArray = @();
+    [Array]$PeriodArray = @();
     
     #Normalize Inputs
     $Key = $Key.ToLower();
@@ -109,11 +109,11 @@ function TrifidCipher {
             $temp = "";
         }
         #split by periods
-        $splitCounter = 0;
-        $tempPeriod = @();
-        $rowPeriod = @();
-        $columnPeriod = @();
         for($i = 0; $i -lt $Text.Length; $i++){
+            $tempPeriod = @();
+            $rowPeriod = @();
+            $columnPeriod = @();
+            $splitCounter = 0;
             while($splitCounter -lt $Period -and ($i -lt $Text.Length)){
                 $tempPeriod += $EncodedArray[$i][0]; #box
                 $rowPeriod += $EncodedArray[$i][1]; #row
@@ -121,13 +121,9 @@ function TrifidCipher {
                 $splitCounter++;
                 $i++;
             }
-            $splitCounter = 0;
             $tempPeriod += $rowPeriod;
             $tempPeriod += $columnPeriod;
             $PeriodArray += ,$tempPeriod;
-            $tempPeriod = @();
-            $rowPeriod = @();
-            $columnPeriod = @();
             $i--;
         }
         foreach ($period1 in $PeriodArray) {

@@ -5,6 +5,8 @@ function BeaufortCipher {
         .DESCRIPTION
             Encrypts or decrypts a string of text using the tabula recta this is done by finding column with the letter to be enciphered, following the column down untill finding the associated letter of the key then the letter of that row is the resulting text. 
             If the key is shorter than the text it is repeated untill as long as the text. 
+        .LINK
+            https://github.com/baumertjonathan/CIPHER_INFO/blob/main/BEAUFORT_CIPHER.md
         .EXAMPLE
             BeaufortCipher -Text "Hello There" -Key "secret"
             > largqalaln

@@ -6,6 +6,8 @@ function AutokeyCipher {
         .DESCRIPTION
             Encrypts a string by taking the string and a key and returning the result of those two inputs on a tabula recta. The key is appended with the input allowing for a shorter key than the message. 
             Decryption functions similarly but adds each decrypted character to the end of the key. 
+        .LINK
+            https://github.com/baumertjonathan/CIPHER_INFO/blob/main/AUTOKEY_CIPHER.md
         .EXAMPLE
             AutokeyCipher -Text "Hello There" -Key "Turing" 
             > ayctbzoicp

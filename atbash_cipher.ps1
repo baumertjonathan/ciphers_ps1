@@ -7,6 +7,8 @@ function AtbashCipher {
             that position of the alphabet if it was flipped. 
             for example "a" would be substituted by "z" and "b" by "y"
             Decryption occours by following the same process.
+        .LINK
+            https://github.com/baumertjonathan/CIPHER_INFO/blob/main/ATBASH_CIPHER.md
         .EXAMPLE
             AtbashCipher "Hello There"
             > svool gsviv

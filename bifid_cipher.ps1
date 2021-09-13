@@ -31,7 +31,8 @@ function BifidCipher {
             
             The key must have 25 unique letters
             The period cannot be longer than the text being enciphered. 
-
+        .LINK
+            https://github.com/baumertjonathan/CIPHER_INFO/blob/main/BIFID_CIPHER.md
         .EXAMPLE
             BifidCipher -Text "Hello There" -Key "qwertyuiopasdfghklzxcvbnm" -Period 5
             > hzydfrqtel
